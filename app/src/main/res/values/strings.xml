@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Goose3</string>
+    <string name="title_activity_bwawk">MakeMap</string>
+    <string name="title_activity_play_it">Map</string>
+</resources>

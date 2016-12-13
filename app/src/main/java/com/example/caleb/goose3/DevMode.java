@@ -23,9 +23,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class playIt extends FragmentActivity implements OnMapReadyCallback,
+
+public class DevMode extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
@@ -33,16 +35,24 @@ public class playIt extends FragmentActivity implements OnMapReadyCallback,
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
+    double currentLatitude;
+    double currentLongitude;
     public boolean stop = false;
     int del = 1;
     int seq;
+    Marker marker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_play_it);
-        Bundle extras = getIntent().getExtras();
-        seq = extras.getInt("seq");
+        setContentView(R.layout.activity_dev_mode);
+        setupDevGame();
+        currentLatitude = 44.668577;
+        currentLongitude = -70.147609;
+        TextView devLat = (TextView) findViewById(R.id.devLat);
+        TextView devLon = (TextView) findViewById(R.id.devLon);
+        devLat.setText(Double.toString(currentLatitude));
+        devLon.setText(Double.toString(currentLongitude));
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -85,7 +95,7 @@ public class playIt extends FragmentActivity implements OnMapReadyCallback,
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        ActivityCompat.requestPermissions(playIt.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1600);
+        ActivityCompat.requestPermissions(DevMode.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1600);
 
     }
 
@@ -98,10 +108,12 @@ public class playIt extends FragmentActivity implements OnMapReadyCallback,
         if (location == null) {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         } else {
-            double currentLatitude = location.getLatitude();
-            double currentLongitude = location.getLongitude();
             LatLng latLng = new LatLng(currentLatitude, currentLongitude);
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+            MarkerOptions options = new MarkerOptions()
+                    .position(latLng)
+                    .title("Current Location");
+            marker = mMap.addMarker(options);
         }
     }
 
@@ -123,23 +135,42 @@ public class playIt extends FragmentActivity implements OnMapReadyCallback,
     public void toastHint(View view) {
         Goose goose = new Goose();
         DBAssist db = new DBAssist(this);
-        String hint = db.returnHint(goose, del, seq);
-        Toast.makeText(playIt.this, hint, Toast.LENGTH_LONG).show();
+        String hint = db.returnHint(goose, del, 999);
+        Toast.makeText(DevMode.this, hint, Toast.LENGTH_LONG).show();
+    }
+    protected void reDraw() {
+        LatLng latLng = new LatLng(currentLatitude, currentLongitude);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        TextView devLat = (TextView) findViewById(R.id.devLat);
+        TextView devLon = (TextView) findViewById(R.id.devLon);
+        devLat.setText(Double.toString(currentLatitude));
+        devLon.setText(Double.toString(currentLongitude));
+        marker.remove();
+        MarkerOptions options = new MarkerOptions()
+                .position(latLng)
+                .title("Current Location");
+        marker = mMap.addMarker(options);
+    }
+    public void moveUp(View view) {
+        currentLatitude += .0001;
+        reDraw();
+    }
+    public void moveDown(View view) {
+        currentLatitude -= .0001;
+        reDraw();
+    }
+    public void moveLeft(View view) {
+        currentLongitude -= .0001;
+        reDraw();
+    }
+    public void moveRight(View view) {
+        currentLongitude += .0001;
+        reDraw();
     }
     public void checkForWin(View view) {
         Goose goose = new Goose();
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (location == null) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-            double lat = location.getLatitude();
-            double lon = location.getLongitude();
-        }
-        double lat = location.getLatitude();
-        double lon = location.getLongitude();
-
+        double lat = currentLatitude;
+        double lon = currentLongitude;
 
         DBAssist db = new DBAssist(this);
         double winLat = db.returnLat(goose, del, 999);
@@ -148,7 +179,7 @@ public class playIt extends FragmentActivity implements OnMapReadyCallback,
         if(lat >= winLat-.0003 && lat <= winLat+.0003) {
             if (lon >= winLon - .0003 && lon <= winLon + .0003) {
                 if (db.returnLength(goose, del, 999) == del) { //nothing left!
-                    Toast.makeText(playIt.this, "You Won!!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(DevMode.this, "You Won!!", Toast.LENGTH_LONG).show();
                     //int holdOn = 0;
                     //while(holdOn <= del) {
                     //    db.delete(goose, holdOn);
@@ -160,12 +191,40 @@ public class playIt extends FragmentActivity implements OnMapReadyCallback,
                 }
 
                 del += 1;
-                Toast.makeText(playIt.this, "You found it! Check your hint for the next one!", Toast.LENGTH_LONG).show();
+                Toast.makeText(DevMode.this, "You found it! Check your hint for the next one!", Toast.LENGTH_LONG).show();
             }
         }
         else {
-            Toast.makeText(playIt.this, "Not Here!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(DevMode.this, "Not Here!", Toast.LENGTH_SHORT).show();
         }
+    }
+    public void setupDevGame() {
+        DBAssist db = new DBAssist(this);
+        Goose goose = new Goose();
+        goose.lat = 44.671289;
+        goose.lon = -70.149336;
+        goose.hint = "A house with eight sides.";
+        goose.gooseID = 1;
+        goose.ID2 = 1;
+        goose.seq = 999;
+        goose.length = 3;
+        db.insert(goose);
+        goose.lat = 44.668555;
+        goose.lon = -70.147412;
+        goose.hint = "Where you spend 90% of your time.";
+        goose.gooseID = 2;
+        goose.ID2 = 2;
+        goose.seq = 999;
+        goose.length = 3;
+        db.insert(goose);
+        goose.lat = 44.667631;
+        goose.lon = -70.147544;
+        goose.hint = "The only flat spot in Farmington.";
+        goose.gooseID = 3;
+        goose.ID2 = 3;
+        goose.seq = 999;
+        goose.length = 3;
+        db.insert(goose);
     }
 
 }

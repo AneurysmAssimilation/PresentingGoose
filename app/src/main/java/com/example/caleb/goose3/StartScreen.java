@@ -17,4 +17,9 @@ public class StartScreen extends AppCompatActivity {
         Intent intent = new Intent(this, bwawk.class);
         startActivity(intent);
     }
+
+    public void startDev(View view) {
+        Intent intent = new Intent(this, DevMode.class);
+        startActivity(intent);
+    }
 }

@@ -13,7 +13,7 @@ import com.google.android.gms.maps.model.LatLng;
 public class markGoose extends AppCompatActivity {
     double lat;
     double lon;
-    int id;
+    int id, seq, length;
     String hint;
 
     @Override
@@ -35,8 +35,12 @@ public class markGoose extends AppCompatActivity {
     public void saveGoose(View view) {
         EditText Ehint = (EditText) findViewById(R.id.hintEdit);
         EditText Eid = (EditText) findViewById(R.id.numberEdit);
+        EditText Eseq = (EditText) findViewById(R.id.gameNumber);
+        EditText Elength = (EditText) findViewById(R.id.gameLength);
         hint = Ehint.getText().toString();
         id = Integer.parseInt(Eid.getText().toString());
+        seq = Integer.parseInt(Eseq.getText().toString());
+        length = Integer.parseInt(Elength.getText().toString());
         Intent intent = new Intent(this, bwawk.class);
         DBAssist db = new DBAssist(this);
         Goose goose = new Goose();
@@ -45,6 +49,8 @@ public class markGoose extends AppCompatActivity {
         goose.hint = hint;
         goose.gooseID = id;
         goose.ID2 = id;
+        goose.seq = seq;
+        goose.length = length;
         db.insert(goose);
         startActivity(intent);
     }
@@ -57,16 +63,14 @@ public class markGoose extends AppCompatActivity {
         Intent intent = new Intent(this, playIt.class);
         DBAssist db = new DBAssist(this);
         Goose goose = new Goose();
-        Goose goose2 = new Goose();
         goose.lat = lat;
         goose.lon = lon;
         goose.hint = hint;
         goose.gooseID = id;
         goose.ID2 = id;
-        db.insert(goose);
-        goose.hint = "#devHack";
-        goose.ID2 = id+1;
-        goose.gooseID = id+1;
+        goose.seq = seq;
+        goose.length = length;
+        intent.putExtra("seq",seq);
         db.insert(goose);
         startActivity(intent);
     }

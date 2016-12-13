@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHandler extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 5;
     private static final String DATABASE_NAME = "geese.db";
 
     public DBHandler(Context context ) {
@@ -21,7 +21,9 @@ public class DBHandler extends SQLiteOpenHelper {
                 + Goose.KEY_lat + " DOUBLE, "
                 + Goose.KEY_lon + " DOUBLE, "
                 + Goose.KEY_ID2 + " INTEGER, "
-                + Goose.KEY_hint + " STRING )";
+                + Goose.KEY_hint + " STRING, "
+                + Goose.KEY_seq + " INTEGER, "
+                + Goose.KEY_length + " INTEGER )";
 
         db.execSQL(CREATE_TABLE);
 

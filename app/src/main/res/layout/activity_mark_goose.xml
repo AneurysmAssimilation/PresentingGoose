@@ -43,6 +43,23 @@
 
         <EditText
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/gameLength"
+            android:hint="How long is the game?" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/gameNumber"
+            android:hint="Which game is this?"
+            android:singleLine="true" />
+
+        <EditText
+            android:layout_width="match_parent"
             android:layout_height="25dp"
             android:inputType="number"
             android:ems="10"

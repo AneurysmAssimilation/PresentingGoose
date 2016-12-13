@@ -11,40 +11,65 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.caleb.goose3.StartScreen">
 
-    <Button
-        android:text="BWAWK (Start)"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="23dp"
-        android:id="@+id/button"
-        android:onClick="bwawk" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/dugoose"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="65dp"
-        android:id="@+id/imageView" />
-
-    <TextView
-        android:text="Wild Goose"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/textView2"
-        android:gravity="center"
-        android:textSize="36sp" />
+        android:layout_height="match_parent">
 
-    <TextView
-        android:text="A Zachary Sylvester Production"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView2"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/textView4"
-        android:gravity="center" />
+        <TextView
+            android:text="A Zachary Sylvester Production"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView2"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/textView4"
+            android:gravity="center" />
+
+        <TextView
+            android:text="Wild Goose"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/textView2"
+            android:gravity="center"
+            android:textSize="36sp" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/dugoose"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="65dp"
+            android:id="@+id/imageView"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:text="BWAWK (Start)"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="23dp"
+                android:id="@+id/button"
+                android:onClick="bwawk"
+                android:layout_weight="1" />
+
+            <Button
+                android:text="Play Dev"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/startDev"
+                android:layout_weight="1"
+                android:onClick="startDev"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
 </RelativeLayout>

@@ -42,7 +42,8 @@
         <activity android:name=".markGoose" />
         <activity
             android:name=".playIt"
-            android:label="@string/title_activity_play_it"></activity>
+            android:label="@string/title_activity_play_it" />
+        <activity android:name=".DevMode"></activity>
     </application>
 
 </manifest>

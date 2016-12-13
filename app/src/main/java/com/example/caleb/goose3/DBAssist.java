@@ -22,6 +22,8 @@ public class DBAssist {
         values.put(Goose.KEY_lon,goose.lon);
         values.put(Goose.KEY_ID2,goose.ID2);
         values.put(Goose.KEY_hint, goose.hint);
+        values.put(Goose.KEY_seq, goose.seq);
+        values.put(Goose.KEY_length, goose.length);
 
         long gooseID = db.insert(Goose.TABLE, null, values);
         db.close();
@@ -45,35 +47,55 @@ public class DBAssist {
         values.put(Goose.KEY_lon, goose.lon);
         values.put(Goose.KEY_hint, goose.hint);
         values.put(Goose.KEY_ID2, goose.ID2);
+        values.put(Goose.KEY_seq, goose.seq);
+        values.put(Goose.KEY_length, goose.length);
 
         // It's a good practice to use parameter ?, instead of concatenate string
         db.update(Goose.TABLE, values, Goose.KEY_ID + "= ?", new String[] { String.valueOf(goose.gooseID) });
         db.close(); // Closing database connection
     }
 
-    public Double returnLat(Goose goose, int ID) {
+    public Double returnLat(Goose goose, int ID, int seq) {
         SQLiteDatabase db = handler.getWritableDatabase();
-        Cursor pull = db.rawQuery("SELECT "+Goose.KEY_lat+" FROM "+Goose.TABLE+ " WHERE "+Goose.KEY_ID2+"="+ID, null);
+        Cursor pull = db.rawQuery("SELECT "+Goose.KEY_lat+" FROM "+Goose.TABLE+ " WHERE "+Goose.KEY_ID2+"="+ID+" AND "+Goose.KEY_seq+"="+seq, null);
         pull.moveToFirst();
         Double result = pull.getDouble(0);
         pull.close();
         return result;
     }
 
-    public Double returnLon(Goose goose, int ID) {
+    public Double returnLon(Goose goose, int ID, int seq) {
         SQLiteDatabase db = handler.getWritableDatabase();
-        Cursor pull = db.rawQuery("SELECT "+Goose.KEY_lon+" FROM "+Goose.TABLE+ " WHERE "+Goose.KEY_ID2+"="+ID, null);
+        Cursor pull = db.rawQuery("SELECT "+Goose.KEY_lon+" FROM "+Goose.TABLE+ " WHERE "+Goose.KEY_ID2+"="+ID+" AND "+Goose.KEY_seq+"="+seq, null);
         pull.moveToFirst();
         Double result = pull.getDouble(0);
         pull.close();
         return result;
     }
 
-    public String returnHint(Goose goose, int ID) {
+    public String returnHint(Goose goose, int ID, int seq) {
         SQLiteDatabase db = handler.getWritableDatabase();
-        Cursor pull = db.rawQuery("SELECT "+Goose.KEY_hint+" FROM "+Goose.TABLE+ " WHERE "+Goose.KEY_ID2+"="+ID, null);
+        Cursor pull = db.rawQuery("SELECT "+Goose.KEY_hint+" FROM "+Goose.TABLE+ " WHERE "+Goose.KEY_ID2+"="+ID+" AND "+Goose.KEY_seq+"="+seq, null);
         pull.moveToFirst();
         String result = pull.getString(0);
+        pull.close();
+        return result;
+    }
+
+    public String returnSequence(Goose goose, int ID) {
+        SQLiteDatabase db = handler.getWritableDatabase();
+        Cursor pull = db.rawQuery("SELECT "+Goose.KEY_seq+" FROM "+Goose.TABLE+ " WHERE "+Goose.KEY_ID2+"="+ID, null);
+        pull.moveToFirst();
+        String result = pull.getString(0);
+        pull.close();
+        return result;
+    }
+
+    public Integer returnLength(Goose goose, int ID, int seq) {
+        SQLiteDatabase db = handler.getWritableDatabase();
+        Cursor pull = db.rawQuery("SELECT "+Goose.KEY_length+" FROM "+Goose.TABLE+ " WHERE "+Goose.KEY_ID2+"="+ID+" AND "+Goose.KEY_seq+"="+seq, null);
+        pull.moveToFirst();
+        int result = pull.getInt(0);
         pull.close();
         return result;
     }

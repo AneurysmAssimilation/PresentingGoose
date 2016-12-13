@@ -22,6 +22,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -96,6 +97,12 @@ public class DevMode extends FragmentActivity implements OnMapReadyCallback,
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         ActivityCompat.requestPermissions(DevMode.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1600);
+        LatLng latLng = new LatLng(currentLatitude, currentLongitude);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+        MarkerOptions options = new MarkerOptions()
+                .position(latLng)
+                .title("Current Location");
+        marker = mMap.addMarker(options);
 
     }
 
@@ -107,13 +114,6 @@ public class DevMode extends FragmentActivity implements OnMapReadyCallback,
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (location == null) {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-        } else {
-            LatLng latLng = new LatLng(currentLatitude, currentLongitude);
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-            MarkerOptions options = new MarkerOptions()
-                    .position(latLng)
-                    .title("Current Location");
-            marker = mMap.addMarker(options);
         }
     }
 
@@ -145,7 +145,9 @@ public class DevMode extends FragmentActivity implements OnMapReadyCallback,
         TextView devLon = (TextView) findViewById(R.id.devLon);
         devLat.setText(Double.toString(currentLatitude));
         devLon.setText(Double.toString(currentLongitude));
-        marker.remove();
+        if(marker != null) {
+            marker.remove();
+        }
         MarkerOptions options = new MarkerOptions()
                 .position(latLng)
                 .title("Current Location");
@@ -189,6 +191,13 @@ public class DevMode extends FragmentActivity implements OnMapReadyCallback,
                     Intent intent = new Intent(this, StartScreen.class);
                     startActivity(intent);
                 }
+                LatLng latLng = new LatLng(winLat, winLon);
+                MarkerOptions options = new MarkerOptions()
+                        .position(latLng)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                        .title("Found Goose")
+                        .snippet(db.returnHint(goose, del, 999));
+                Marker newMarker = mMap.addMarker(options);
 
                 del += 1;
                 Toast.makeText(DevMode.this, "You found it! Check your hint for the next one!", Toast.LENGTH_LONG).show();

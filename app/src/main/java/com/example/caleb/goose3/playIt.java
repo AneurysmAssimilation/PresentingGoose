@@ -23,6 +23,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class playIt extends FragmentActivity implements OnMapReadyCallback,
@@ -36,6 +37,7 @@ public class playIt extends FragmentActivity implements OnMapReadyCallback,
     public boolean stop = false;
     int del = 1;
     int seq;
+    Marker marker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,15 +141,22 @@ public class playIt extends FragmentActivity implements OnMapReadyCallback,
         }
         double lat = location.getLatitude();
         double lon = location.getLongitude();
-
+        LatLng latLng = new LatLng(lat, lon);
+        if(marker != null) {
+            marker.remove();
+        }
+        MarkerOptions options = new MarkerOptions()
+                .position(latLng)
+                .title("Current Location");
+        marker = mMap.addMarker(options);
 
         DBAssist db = new DBAssist(this);
-        double winLat = db.returnLat(goose, del, 999);
-        double winLon = db.returnLon(goose, del, 999);
+        double winLat = db.returnLat(goose, del, seq);
+        double winLon = db.returnLon(goose, del, seq);
 
         if(lat >= winLat-.0003 && lat <= winLat+.0003) {
             if (lon >= winLon - .0003 && lon <= winLon + .0003) {
-                if (db.returnLength(goose, del, 999) == del) { //nothing left!
+                if (db.returnLength(goose, del, seq) == del) { //nothing left!
                     Toast.makeText(playIt.this, "You Won!!", Toast.LENGTH_LONG).show();
                     //int holdOn = 0;
                     //while(holdOn <= del) {
